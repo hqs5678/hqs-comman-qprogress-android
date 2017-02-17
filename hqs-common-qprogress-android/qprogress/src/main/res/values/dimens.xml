@@ -2,6 +2,7 @@
 
     <!--圆形进度条背景大小-->
     <dimen name="q_circleProgressBgWH">110dp</dimen>
+    <dimen name="q_circleProgressBgWHHalf">55dp</dimen>
 
 
 </resources>

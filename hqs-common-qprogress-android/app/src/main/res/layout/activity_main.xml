@@ -13,5 +13,27 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Hello World!"
+        android:id="@+id/textView" />
+
+    <Button
+        android:text="Show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="19dp"
+        android:background="@color/colorAccent"
+        android:onClick="show1"
+        android:id="@+id/btnShow" />
+
+    <Button
+        android:text="show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnShow"
+        android:layout_toEndOf="@+id/btnShow"
+        android:layout_marginStart="12dp"
+        android:onClick="show2"
+        android:id="@+id/button2" />
 </RelativeLayout>
