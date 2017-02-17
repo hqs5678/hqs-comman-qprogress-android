@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.lzyzsd.circleprogress.CircleProgress
+        android:id="@+id/q_circle_progress"
+        android:layout_width="@dimen/q_circleProgressBgWH"
+        android:layout_height="@dimen/q_circleProgressBgWH"
+        android:layout_centerInParent="true"
+        custom:circle_finished_color="#3ec1f9"
+        custom:circle_progress="20"
+        custom:circle_text_color="#402e2e"
+        custom:circle_text_size="14sp" />
+
+</RelativeLayout>

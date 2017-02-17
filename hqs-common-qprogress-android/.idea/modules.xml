@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/hqs-common-qprogress-android.iml" filepath="$PROJECT_DIR$/hqs-common-qprogress-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qprogress/qprogress.iml" filepath="$PROJECT_DIR$/qprogress/qprogress.iml" />
     </modules>
   </component>
 </project>
