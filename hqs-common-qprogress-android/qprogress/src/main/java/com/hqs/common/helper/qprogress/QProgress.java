@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.hqs.common.utils.StatusBarUtil;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 
 /**
@@ -24,101 +26,123 @@ import java.lang.ref.WeakReference;
 
 public final class QProgress {
 
-    private static QProgressParam progressParam;
-    private static WeakReference<QProgressActivity> progressActivityReference;
+    private QProgressParam param;
+    private WeakReference<Activity> activityReference;
 
-    private static boolean isWorking = false;
+    private boolean isWorking = false;
 
-    public static void show(Activity activity){
-        if (progressActivityReference == null || progressActivityReference.get() == null) {
-            Intent intent = new Intent(activity, QProgressActivity.class);
+    private QProgress(Activity activity, QProgressParam param){
+        this.param = param;
+        this.activityReference = new WeakReference<Activity>(activity);
+    }
 
-            activity.startActivity(intent);
-            activity.overridePendingTransition(0, 0);
+    public void show(){
+        if (QProgressActivity.progressActivityReference == null || QProgressActivity.progressActivityReference.get() == null) {
+            Activity activity = this.activityReference.get();
+            if (activity != null){
+                Intent intent = new Intent(activity, QProgressActivity.class);
+
+                intent.putExtra("progressParam", param);
+                activity.startActivity(intent);
+                activity.overridePendingTransition(0, 0);
+            }
         }
     }
 
-    public static void showProgress(Activity activity, int progress, String preText) {
-        if (progressActivityReference == null || progressActivityReference.get() == null) {
+    public void show(int progress, String preText) {
+        if (QProgressActivity.progressActivityReference == null || QProgressActivity.progressActivityReference.get() == null) {
             if (isWorking){
                 return;
             }
-            isWorking = true;
-            Intent intent = new Intent(activity, QProgressActivity.class);
+            Activity activity = this.activityReference.get();
+            if (activity != null){
+                isWorking = true;
+                Intent intent = new Intent(activity, QProgressActivity.class);
 
-            Bundle bundle = new Bundle();
-            bundle.putString("preText", preText);
-            bundle.putInt("progress", progress);
-            intent.putExtras(bundle);
+                Bundle bundle = new Bundle();
+                bundle.putString("preText", preText);
+                bundle.putInt("progress", progress);
+                bundle.putSerializable("progressParam", param);
+                intent.putExtras(bundle);
 
-            activity.startActivity(intent);
-            activity.overridePendingTransition(0, 0);
+                activity.startActivity(intent);
+                activity.overridePendingTransition(0, 0);
+            }
         }
         else{
-            QProgressActivity progressActivity = progressActivityReference.get();
+            QProgressActivity progressActivity = QProgressActivity.progressActivityReference.get();
             progressActivity.updateProgress(progress, preText);
         }
     }
 
-    public static void dismiss(){
-        if (progressActivityReference != null){
-            QProgressActivity activity = progressActivityReference.get();
+    public void dismiss(){
+        if (QProgressActivity.progressActivityReference != null){
+            QProgressActivity activity = QProgressActivity.progressActivityReference.get();
             if (activity != null) {
                 activity.onFinish();
             }
         }
     }
 
-    public static void setWheelColor(int wheelColor) {
-        if (progressParam == null){
-            progressParam = new QProgressParam();
-        }
-        progressParam.wheelColor = wheelColor;
-    }
+    public static class Builder{
 
-    public static void setCancelable(boolean cancelable) {
-        if (progressParam == null){
-            progressParam = new QProgressParam();
+        private QProgressParam progressParam;
+        private Activity activity;
+        public Builder(Activity activity){
+            this.activity = activity;
+            this.progressParam = new QProgressParam();
         }
-        progressParam.cancelable = cancelable;
-    }
 
-    public static void setDismissOnTouch(boolean dismissOnTouch) {
-        if (progressParam == null){
-            progressParam = new QProgressParam();
+        public Builder setWheelColor(int wheelColor) {
+            progressParam.wheelColor = wheelColor;
+            return this;
         }
-        progressParam.dismissOnTouch = dismissOnTouch;
-    }
 
-    public static void setWheelBackgroundColor(int wheelBackgroundColor) {
-        if (progressParam == null){
-            progressParam = new QProgressParam();
+        public Builder setCancelable(boolean cancelable) {
+            progressParam.cancelable = cancelable;
+            return this;
         }
-        progressParam.wheelBackgroundColor = wheelBackgroundColor;
-    }
 
-    public static void setProgressBarBackgroundColor(int progressBarBackgroundColor) {
-        if (progressParam == null){
-            progressParam = new QProgressParam();
+        public Builder setDismissOnTouch(boolean dismissOnTouch) {
+            progressParam.dismissOnTouch = dismissOnTouch;
+            return this;
         }
-        progressParam.progressBarBackgroundColor = progressBarBackgroundColor;
-    }
 
-    public static void setProgressBarTintColor(int progressBarTintColor) {
-        if (progressParam == null){
-            progressParam = new QProgressParam();
+        public Builder setWheelBackgroundColor(int wheelBackgroundColor) {
+            progressParam.wheelBackgroundColor = wheelBackgroundColor;
+            return this;
         }
-        progressParam.progressBarTintColor = progressBarTintColor;
+
+        public Builder setProgressBarBackgroundColor(int progressBarBackgroundColor) {
+            progressParam.progressBarBackgroundColor = progressBarBackgroundColor;
+            return this;
+        }
+
+        public Builder setProgressBarTintColor(int progressBarTintColor) {
+            progressParam.progressBarTintColor = progressBarTintColor;
+            return this;
+        }
+
+        public QProgress create(){
+
+            QProgress qProgress = new QProgress(this.activity, progressParam);
+            this.activity = null;
+            this.progressParam = null;
+            return qProgress;
+        }
     }
 
     public static class QProgressActivity extends Activity{
 
+        private QProgressParam progressParam;
         private RelativeLayout contentView;
         private CardView bgView;
         private ProgressWheel progressWheel;
         private int progress;
         private String preText;
         private CircleProgress circleProgress;
+
+        private static WeakReference<QProgressActivity> progressActivityReference;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -127,43 +151,51 @@ public final class QProgress {
             StatusBarUtil.transparencyBar(this);
 
             progressActivityReference = new WeakReference<QProgressActivity>(this);
-            if (progressParam == null){
-                progressParam = new QProgressParam();
-            }
+
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
+
+                progressParam = (QProgressParam) bundle.getSerializable("progressParam");
+                if (progressParam == null) {
+                    progressParam = new QProgressParam();
+                }
                 progress = bundle.getInt("progress");
                 preText = bundle.getString("preText");
 
-                contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_circle_layout, null);
+                if (preText != null) {
+                    contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_circle_layout, null);
 
-                this.circleProgress = (CircleProgress) contentView.findViewById(R.id.q_circle_progress);
-                circleProgress.setUnfinishedColor(progressParam.progressBarBackgroundColor);
-                circleProgress.setFinishedColor(progressParam.progressBarTintColor);
-                circleProgress.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                    this.circleProgress = (CircleProgress) contentView.findViewById(R.id.q_circle_progress);
+                    circleProgress.setUnfinishedColor(progressParam.progressBarBackgroundColor);
+                    circleProgress.setFinishedColor(progressParam.progressBarTintColor);
+                    circleProgress.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                    }
-                });
-                this.circleProgress.setProgress(progress);
-                circleProgress.setPrefixText(preText);
+                        }
+                    });
+                    this.circleProgress.setProgress(progress);
+                    circleProgress.setPrefixText(preText);
+                } else {
+                    contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_layout, null);
+
+                    progressWheel = (ProgressWheel) contentView.findViewById(R.id.q_progress_wheel);
+                    progressWheel.setBarColor(progressParam.wheelColor);
+                    progressWheel.spin();
+
+                    bgView = (CardView) contentView.findViewById(R.id.q_progress_bg_view);
+                    bgView.setCardBackgroundColor(progressParam.wheelBackgroundColor);
+                    bgView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+                }
             }
-            else {
-                contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_layout, null);
-
-                progressWheel = (ProgressWheel) contentView.findViewById(R.id.q_progress_wheel);
-                progressWheel.setBarColor(progressParam.wheelColor);
-                progressWheel.spin();
-
-                bgView = (CardView) contentView.findViewById(R.id.q_progress_bg_view);
-                bgView.setCardBackgroundColor(progressParam.wheelBackgroundColor);
-                bgView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
+            else{
+                Toast.makeText(this, "Progress Wrong!!!", Toast.LENGTH_SHORT).show();
+                return;
             }
 
 
@@ -250,7 +282,6 @@ public final class QProgress {
             progressParam = null;
             progressActivityReference.clear();
             progressActivityReference = null;
-            isWorking = false;
         }
 
         @Override
@@ -264,10 +295,9 @@ public final class QProgress {
             return true;
         }
 
-
     }
 
-    private static class QProgressParam{
+    private static class QProgressParam implements Serializable{
         private int wheelColor = Color.BLUE;
         private int wheelBackgroundColor = Color.rgb(240, 240, 240);
         private int progressBarBackgroundColor = Color.rgb(240, 240, 240);

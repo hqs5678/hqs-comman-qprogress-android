@@ -23,12 +23,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void show1(View view){
 
-        QProgress.setCancelable(true);
-        QProgress.setWheelColor(Color.BLUE);
-        QProgress.setDismissOnTouch(true);
-        QProgress.setDismissOnTouch(false);
+        QProgress.Builder builder = new QProgress.Builder(this);
+        builder.setCancelable(true)
+                .setWheelColor(Color.BLUE)
+                .setDismissOnTouch(true)
+                .setDismissOnTouch(false);
 
-        QProgress.show(this);
+        builder.create().show();
 
     }
 
@@ -39,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-
+                final QProgress qProgress = new QProgress.Builder(MainActivity.this)
+                        .setCancelable(false)
+                        .create();
 
                 int p = 0;
                 while (p <= 100){
@@ -55,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            QProgress.showProgress(MainActivity.this, pp, "正在下载");
-                            QProgress.setCancelable(false);
+                            qProgress.show(pp, "正在下载");
                         }
                     });
 
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(MainActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
-                        QProgress.dismiss();
+                        qProgress.dismiss();
                     }
                 });
 
