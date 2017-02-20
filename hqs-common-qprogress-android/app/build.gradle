@@ -26,4 +26,10 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile project(':qprogress')
+
+
+    // leakcanary 调试Android 内存泄露
+        debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+        releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+        testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }
