@@ -81,6 +81,11 @@ public final class QProgress {
             if (activity != null) {
                 activity.onFinish();
             }
+            this.param = null;
+            if (this.activityReference != null) {
+                this.activityReference.clear();
+                this.activityReference = null;
+            }
         }
     }
 
@@ -280,8 +285,10 @@ public final class QProgress {
             super.onDestroy();
 
             progressParam = null;
-            progressActivityReference.clear();
-            progressActivityReference = null;
+            if (progressActivityReference != null){
+                progressActivityReference.clear();
+                progressActivityReference = null;
+            }
         }
 
         @Override
