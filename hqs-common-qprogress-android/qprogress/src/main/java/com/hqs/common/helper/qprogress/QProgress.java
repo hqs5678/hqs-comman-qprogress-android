@@ -30,6 +30,7 @@ public final class QProgress {
     private WeakReference<Activity> activityReference;
 
     private boolean isWorking = false;
+    private static OnProgressDismissCallBack onProgressDismissCallBack;
 
     private QProgress(Activity activity, QProgressParam param){
         this.param = param;
@@ -73,6 +74,10 @@ public final class QProgress {
             QProgressActivity progressActivity = QProgressActivity.progressActivityReference.get();
             progressActivity.updateProgress(progress, preText);
         }
+    }
+
+    public void setOnProgressDismissCallBack(OnProgressDismissCallBack onProgressDismissCallBack) {
+        QProgress.onProgressDismissCallBack = onProgressDismissCallBack;
     }
 
     public void dismiss(){
@@ -289,6 +294,10 @@ public final class QProgress {
                 progressActivityReference.clear();
                 progressActivityReference = null;
             }
+            if (onProgressDismissCallBack != null) {
+                onProgressDismissCallBack.onProgressDismiss();
+                onProgressDismissCallBack = null;
+            }
         }
 
         @Override
@@ -302,6 +311,10 @@ public final class QProgress {
             return true;
         }
 
+    }
+
+    public interface OnProgressDismissCallBack {
+        void onProgressDismiss();
     }
 
     private static class QProgressParam implements Serializable{

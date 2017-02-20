@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.hqs.common.helper.qprogress.QProgress;
+import com.hqs.common.utils.Log;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
                 final QProgress qProgress = new QProgress.Builder(MainActivity.this)
                         .setCancelable(false)
                         .create();
+                qProgress.setOnProgressDismissCallBack(new QProgress.OnProgressDismissCallBack() {
+                    @Override
+                    public void onProgressDismiss() {
+                        Log.print("qProgress dismiss");
+                    }
+                });
 
                 int p = 0;
                 while (p <= 100){
