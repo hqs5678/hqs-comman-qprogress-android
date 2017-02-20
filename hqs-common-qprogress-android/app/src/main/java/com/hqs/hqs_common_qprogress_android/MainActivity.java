@@ -42,15 +42,24 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
 
                 final QProgress qProgress = new QProgress.Builder(MainActivity.this)
-                        .setCancelable(false)
+                        .setCancelable(true)
                         .create();
-                qProgress.setOnProgressDismissCallBack(new QProgress.OnProgressDismissCallBack() {
+                qProgress.setOnProgressListener(new QProgress.OnProgressListener() {
                     @Override
-                    public void onProgressDismiss() {
-                        Log.print("qProgress dismiss");
+                    public void onProgressShow() {
+                        Log.print("onProgressShow");
+                    }
+
+                    @Override
+                    public void onProgressCancel() {
+                        Log.print("onProgressCancel");
+                    }
+
+                    @Override
+                    public void onProgressDestroy() {
+                        Log.print("onProgressDestroy");
                     }
                 });
-
                 int p = 0;
                 while (p <= 100){
                     final  int pp = p;

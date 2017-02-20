@@ -29,8 +29,7 @@ public final class QProgress {
     private QProgressParam param;
     private WeakReference<Activity> activityReference;
 
-    private boolean isWorking = false;
-    private static OnProgressDismissCallBack onProgressDismissCallBack;
+    private static OnProgressListener onProgressListener;
 
     private QProgress(Activity activity, QProgressParam param){
         this.param = param;
@@ -52,12 +51,9 @@ public final class QProgress {
 
     public void show(int progress, String preText) {
         if (QProgressActivity.progressActivityReference == null || QProgressActivity.progressActivityReference.get() == null) {
-            if (isWorking){
-                return;
-            }
+
             Activity activity = this.activityReference.get();
             if (activity != null){
-                isWorking = true;
                 Intent intent = new Intent(activity, QProgressActivity.class);
 
                 Bundle bundle = new Bundle();
@@ -76,9 +72,11 @@ public final class QProgress {
         }
     }
 
-    public void setOnProgressDismissCallBack(OnProgressDismissCallBack onProgressDismissCallBack) {
-        QProgress.onProgressDismissCallBack = onProgressDismissCallBack;
+    public static void setOnProgressListener(OnProgressListener onProgressListener) {
+        QProgress.onProgressListener = onProgressListener;
     }
+
+
 
     public void dismiss(){
         if (QProgressActivity.progressActivityReference != null){
@@ -244,7 +242,19 @@ public final class QProgress {
 
         }
 
+        @Override
+        protected void onStart() {
+            super.onStart();
+            if (onProgressListener != null) {
+                onProgressListener.onProgressShow();
+            }
+        }
+
         private void onFinish(){
+
+            if (onProgressListener != null) {
+                onProgressListener.onProgressCancel();
+            }
 
             contentView.setEnabled(false);
             Animation animation = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
@@ -294,9 +304,8 @@ public final class QProgress {
                 progressActivityReference.clear();
                 progressActivityReference = null;
             }
-            if (onProgressDismissCallBack != null) {
-                onProgressDismissCallBack.onProgressDismiss();
-                onProgressDismissCallBack = null;
+            if (onProgressListener != null) {
+                onProgressListener.onProgressDestroy();
             }
         }
 
@@ -313,8 +322,10 @@ public final class QProgress {
 
     }
 
-    public interface OnProgressDismissCallBack {
-        void onProgressDismiss();
+    public interface OnProgressListener {
+        void onProgressShow();
+        void onProgressCancel();
+        void onProgressDestroy();
     }
 
     private static class QProgressParam implements Serializable{
