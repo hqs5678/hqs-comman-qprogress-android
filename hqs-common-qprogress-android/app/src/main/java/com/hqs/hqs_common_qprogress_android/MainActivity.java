@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     final  int pp = p;
 
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
