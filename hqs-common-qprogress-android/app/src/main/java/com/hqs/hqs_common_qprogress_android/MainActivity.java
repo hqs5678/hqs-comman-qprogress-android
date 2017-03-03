@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 int p = 0;
-                while (p <= 100){
+                while (p <= 10000){
                     final  int pp = p;
 
                     try {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            qProgress.show(pp, "正在下载");
+                            qProgress.show(pp/100, "正在下载");
                         }
                     });
 

@@ -28,6 +28,7 @@ public final class QProgress {
 
     private QProgressParam param;
     private WeakReference<Activity> activityReference;
+    private boolean isShowing = false;
 
     private static OnProgressListener onProgressListener;
 
@@ -50,26 +51,36 @@ public final class QProgress {
     }
 
     public void show(int progress, String preText) {
-        if (QProgressActivity.progressActivityReference == null || QProgressActivity.progressActivityReference.get() == null) {
+        if (isShowing == false){
+            if (QProgressActivity.progressActivityReference == null
+                    || QProgressActivity.progressActivityReference.get() == null){
 
-            Activity activity = this.activityReference.get();
-            if (activity != null){
-                Intent intent = new Intent(activity, QProgressActivity.class);
+                Activity activity = this.activityReference.get();
+                if (activity != null){
+                    Intent intent = new Intent(activity, QProgressActivity.class);
 
-                Bundle bundle = new Bundle();
-                bundle.putString("preText", preText);
-                bundle.putInt("progress", progress);
-                bundle.putSerializable("progressParam", param);
-                intent.putExtras(bundle);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("preText", preText);
+                    bundle.putInt("progress", progress);
+                    bundle.putSerializable("progressParam", param);
+                    intent.putExtras(bundle);
 
-                activity.startActivity(intent);
-                activity.overridePendingTransition(0, 0);
+                    activity.startActivity(intent);
+                    activity.overridePendingTransition(0, 0);
+
+                    isShowing = true;
+                }
+
+                return;
             }
         }
         else{
-            QProgressActivity progressActivity = QProgressActivity.progressActivityReference.get();
-            progressActivity.updateProgress(progress, preText);
+            if (QProgressActivity.progressActivityReference != null) {
+                QProgressActivity progressActivity = QProgressActivity.progressActivityReference.get();
+                progressActivity.updateProgress(progress, preText);
+            }
         }
+
     }
 
     public static void setOnProgressListener(OnProgressListener onProgressListener) {
