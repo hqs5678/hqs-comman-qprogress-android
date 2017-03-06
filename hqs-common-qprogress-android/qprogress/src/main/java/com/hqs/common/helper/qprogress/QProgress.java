@@ -38,6 +38,10 @@ public final class QProgress {
     }
 
     public void show(){
+        if (isShowing) {
+            return;
+        }
+        isShowing = true;
         if (QProgressActivity.progressActivityReference == null || QProgressActivity.progressActivityReference.get() == null) {
             Activity activity = this.activityReference.get();
             if (activity != null){
@@ -170,7 +174,6 @@ public final class QProgress {
             StatusBarUtil.transparencyBar(this);
 
             progressActivityReference = new WeakReference<QProgressActivity>(this);
-
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
 
@@ -180,41 +183,47 @@ public final class QProgress {
                 }
                 progress = bundle.getInt("progress");
                 preText = bundle.getString("preText");
-
-                if (preText != null) {
-                    contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_circle_layout, null);
-
-                    this.circleProgress = (CircleProgress) contentView.findViewById(R.id.q_circle_progress);
-                    circleProgress.setUnfinishedColor(progressParam.progressBarBackgroundColor);
-                    circleProgress.setFinishedColor(progressParam.progressBarTintColor);
-                    circleProgress.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-                    this.circleProgress.setProgress(progress);
-                    circleProgress.setPrefixText(preText);
-                } else {
-                    contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_layout, null);
-
-                    progressWheel = (ProgressWheel) contentView.findViewById(R.id.q_progress_wheel);
-                    progressWheel.setBarColor(progressParam.wheelColor);
-                    progressWheel.spin();
-
-                    bgView = (CardView) contentView.findViewById(R.id.q_progress_bg_view);
-                    bgView.setCardBackgroundColor(progressParam.wheelBackgroundColor);
-                    bgView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-                }
             }
             else{
                 Toast.makeText(this, "Progress Wrong!!!", Toast.LENGTH_SHORT).show();
+                finish();
                 return;
+            }
+            initView();
+            enterAnim();
+        }
+
+        private void initView(){
+
+            if (preText != null) {
+                contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_circle_layout, null);
+
+                this.circleProgress = (CircleProgress) contentView.findViewById(R.id.q_circle_progress);
+                circleProgress.setUnfinishedColor(progressParam.progressBarBackgroundColor);
+                circleProgress.setFinishedColor(progressParam.progressBarTintColor);
+                circleProgress.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                this.circleProgress.setProgress(progress);
+                circleProgress.setPrefixText(preText);
+            } else {
+                contentView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.q_progress_layout, null);
+
+                progressWheel = (ProgressWheel) contentView.findViewById(R.id.q_progress_wheel);
+                progressWheel.setBarColor(progressParam.wheelColor);
+                progressWheel.spin();
+
+                bgView = (CardView) contentView.findViewById(R.id.q_progress_bg_view);
+                bgView.setCardBackgroundColor(progressParam.wheelBackgroundColor);
+                bgView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
             }
 
 
@@ -229,7 +238,9 @@ public final class QProgress {
                     }
                 }
             });
+        }
 
+        private void enterAnim(){
             Animation animation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
             animation.setDuration(100);
             animation.setFillAfter(true);
@@ -250,7 +261,6 @@ public final class QProgress {
                 }
             });
             contentView.setAnimation(animation);
-
         }
 
         @Override
@@ -295,8 +305,13 @@ public final class QProgress {
             this.progress = progress;
             this.preText = preText;
 
-            circleProgress.setProgress(progress);
-            circleProgress.setPrefixText(preText);
+            if (circleProgress == null) {
+                initView();
+            }
+            else{
+                circleProgress.setProgress(progress);
+                circleProgress.setPrefixText(preText);
+            }
         }
 
 

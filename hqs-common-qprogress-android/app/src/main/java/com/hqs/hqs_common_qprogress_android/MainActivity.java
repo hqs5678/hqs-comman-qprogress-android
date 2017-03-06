@@ -59,6 +59,21 @@ public class MainActivity extends AppCompatActivity {
                         Log.print("onProgressDestroy");
                     }
                 });
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        qProgress.show();
+                    }
+                });
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
                 int p = 0;
                 while (p <= 10000){
                     final  int pp = p;
