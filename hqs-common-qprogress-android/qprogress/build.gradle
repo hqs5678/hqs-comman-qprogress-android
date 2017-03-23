@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = '1.0.6'
-def vc = 7
+version = '1.0.7'
+def vc = 8
 
 android {
     compileSdkVersion 25
@@ -26,11 +26,11 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.pnikosis:materialish-progress:1.7'
     compile 'com.github.lzyzsd:circleprogress:1.1.0'
-    compile 'com.android.support:cardview-v7:25.1.1'
-    compile 'com.hqs.common:hqs-common:1.0.15'
+    compile 'com.hqs.common:hqs-common:1.0.26'
+    compile 'com.android.support:cardview-v7:25.3.0'
 }
 
 
