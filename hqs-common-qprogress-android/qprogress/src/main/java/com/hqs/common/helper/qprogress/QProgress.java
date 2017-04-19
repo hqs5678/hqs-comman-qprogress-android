@@ -340,8 +340,8 @@ public final class QProgress {
             if (keyCode == KeyEvent.KEYCODE_BACK && progressParam.cancelable){
                 if (contentView.isEnabled()){
                     contentView.setEnabled(false);
-                    onFinish();
                 }
+                onFinish();
             }
             return true;
         }
