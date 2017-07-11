@@ -5,23 +5,21 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.CardView
-        android:layout_centerInParent="true"
         android:layout_width="@dimen/q_circleProgressBgWH"
         android:layout_height="@dimen/q_circleProgressBgWH"
+        android:layout_centerInParent="true"
         custom:cardCornerRadius="@dimen/q_circleProgressBgWHHalf">
 
         <com.github.lzyzsd.circleprogress.CircleProgress
             android:id="@+id/q_circle_progress"
-            android:layout_width="@dimen/q_circleProgressBgWH"
-            android:layout_height="@dimen/q_circleProgressBgWH"
-            android:layout_centerInParent="true"
-            custom:circle_finished_color="#3ec1f9"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            custom:circle_finished_color="#30b6ef"
             custom:circle_progress="20"
-            custom:circle_text_color="#402e2e"
-            custom:circle_text_size="14sp" />
+            custom:circle_text_color="@color/q_progressTextColor"
+            custom:circle_text_size="@dimen/q_progressTextSize" />
 
     </android.support.v7.widget.CardView>
-
 
 
 </RelativeLayout>

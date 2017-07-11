@@ -2,7 +2,13 @@
 
     <!--圆形进度条背景大小-->
     <dimen name="q_circleProgressBgWH">110dp</dimen>
+    <!--圆形进度条的圆角大小  即 q_circleProgressBgWH * 0.5 -->
     <dimen name="q_circleProgressBgWHHalf">55dp</dimen>
 
+    <!--进度条圆角大小-->
+    <dimen name="q_progressCornerRadius">10dp</dimen>
+
+    <!--圆形进度条标题字体的大小-->
+    <dimen name="q_progressTextSize">14sp</dimen>
 
 </resources>
