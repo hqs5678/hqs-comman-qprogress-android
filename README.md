@@ -61,7 +61,7 @@ progress = new QProgress.Builder(MainActivity.this)
 
 
 #### 设置横竖屏切换支持
-> 支持横竖屏切换需要在做如下操作
+> 支持横竖屏切换需要做如下操作
 ##### 1. 为activity 设置监听手机屏幕横竖翻转的权限
 > 在AndroidManifest.xml文件中添加如下代码, 以MainActivity为例, 为MainActivity 添加 configChanges属性
 
@@ -98,9 +98,11 @@ public void onConfigurationChanged(Configuration newConfig) {
 ```
 
 #### 设置返回按钮事件
-> 这个步骤不能省, 如果忘记本步骤, 会造成点击返回按钮时整个activity都返回或调起用户自定义的其他事件, 具体内容可以参考如下代码
+> 这个步骤不能省, 如果忘记本步骤, 会造成点击返回按钮时整个activity都返回或调起用户自定义的其他事件, 具体操作: 在MainActivity 中添加如下:
 
 ```
+
+
 
 @Override
 public void onBackPressed() {
@@ -127,7 +129,7 @@ public void onBackPressed() {
 1. setOnProgressListener  设置监听进度条
 
 ##### 其他方式(res中文件)
-> 覆盖资源文件中的属性的值修改样式, res文件主要内容如下:
+> 覆盖资源文件中的属性的值以修改样式, res文件主要内容如下:
 
 ```
 
