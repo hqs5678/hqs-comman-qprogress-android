@@ -101,9 +101,6 @@ public void onConfigurationChanged(Configuration newConfig) {
 > 这个步骤不能省, 如果忘记本步骤, 会造成点击返回按钮时整个activity都返回或调起用户自定义的其他事件, 具体操作: 在MainActivity 中添加如下:
 
 ```
-
-
-
 @Override
 public void onBackPressed() {
     if (progress != null && progress.onBackPressed()){
