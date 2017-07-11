@@ -260,8 +260,6 @@ public final class QProgress {
                     destroy();
                 }
             });
-            contentView.setEnabled(false);
-
         }
 
         private void updateOrientationChanged(int orientation){
@@ -299,7 +297,6 @@ public final class QProgress {
                 @Override
                 public void onAnimationEnd(Animation animation) {
 
-                    contentView.setEnabled(true);
                     if (onProgressListener != null) {
                         onProgressListener.onProgressShow();
                     }
@@ -319,8 +316,6 @@ public final class QProgress {
             if (onProgressListener != null) {
                 onProgressListener.onProgressCancel();
             }
-
-            contentView.setEnabled(false);
             Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
             animation.setDuration(50);
             animation.setFillAfter(true);
