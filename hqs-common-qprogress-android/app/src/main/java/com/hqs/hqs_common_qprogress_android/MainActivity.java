@@ -28,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
         QProgress.Builder builder = new QProgress.Builder(this);
         builder.setCancelable(true)
                 .setWheelColor(Color.BLUE)
-                .setDismissOnTouch(true)
-                .setDismissOnTouch(false);
+                .setDismissOnTouch(true);
 
         progress = builder.create().show();
 
@@ -70,18 +69,18 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
 
                 int p = 0;
-                while (p <= 10000){
+                while (p <= 1000){
                     final  int pp = p;
 
                     try {
-                        Thread.sleep(1);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            progress.show(pp/100, "正在下载");
+                            progress.show(pp/10, "正在下载");
                         }
                     });
 

@@ -40,39 +40,38 @@ public final class QProgress {
     }
 
     public QProgress show(){
-        if (isShowing) {
-            return this;
-        }
-        if (progressComponent == null) {
+        if (progressComponent == null || !isShowing) {
             Activity activity = this.activityReference.get();
-            if (activity != null){
-                progressComponent = new QProgressComponent(activity, param);
-                isShowing = true;
-            }
+            progressComponent = new QProgressComponent(activity, param);
+            isShowing = true;
         }
         return this;
     }
 
     public QProgress show(int progress, String preText) {
-        if (isShowing == false && progressComponent == null){
+        if (progress < 0){
             Activity activity = this.activityReference.get();
-            if (activity != null) {
-                progressComponent = new QProgressComponent(activity, param);
-                progressComponent.preText = preText;
-                progressComponent.progress = progress;
-
-                isShowing = true;
-            }
+            Toast.makeText(activity, "progress should be greater than zero", Toast.LENGTH_LONG).show();
+            return this;
         }
-        else{
-            progressComponent.updateProgress(progress, preText);
+        if (progressComponent == null){
+            Activity activity = this.activityReference.get();
+            progressComponent = new QProgressComponent(activity, param);
         }
+        progressComponent.updateProgress(progress, preText);
+        isShowing = true;
 
         return this;
     }
 
     public void dismiss(){
-
+        if (progressComponent != null){
+            progressComponent.preFinish();
+            progressComponent = null;
+            param = null;
+            activityReference = null;
+            isShowing = false;
+        }
     }
 
     // 添加返回按钮点击事件
@@ -146,7 +145,7 @@ public final class QProgress {
         private RootView contentView;
         private CardView bgView;
         private ProgressWheel progressWheel;
-        private int progress;
+        private int progress = -1;
         private String preText;
         private CircleProgress circleProgress;
         private Context context;
@@ -174,7 +173,7 @@ public final class QProgress {
 
         private void init(){
 
-            if (preText != null) {
+            if (progress >= 0) {
                 contentView = (RootView) LayoutInflater.from(context).inflate(R.layout.q_progress_circle_layout, null);
 
                 this.circleProgress = (CircleProgress) contentView.findViewById(R.id.q_circle_progress);
@@ -288,16 +287,16 @@ public final class QProgress {
         }
 
         private void updateProgress(int progress, String preText){
+
             this.progress = progress;
             this.preText = preText;
 
-            if (circleProgress == null) {
+            if (circleProgress == null){
+                parent.removeView(contentView);
                 init();
             }
-            else{
-                circleProgress.setProgress(progress);
-                circleProgress.setPrefixText(preText);
-            }
+            circleProgress.setProgress(progress);
+            circleProgress.setPrefixText(preText);
         }
 
         private void destroy() {
