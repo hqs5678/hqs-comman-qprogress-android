@@ -1,5 +1,6 @@
 package com.hqs.hqs_common_qprogress_android;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -111,6 +112,16 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (progress != null){
+            progress.onConfigurationChanged(newConfig);
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
