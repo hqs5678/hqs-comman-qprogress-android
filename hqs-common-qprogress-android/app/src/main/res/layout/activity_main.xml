@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -10,30 +10,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hqs.hqs_common_qprogress_android.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView" />
-
     <Button
-        android:text="Show"
+        android:id="@+id/btnShow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
         android:layout_alignParentStart="true"
         android:layout_marginTop="19dp"
-        android:background="@color/colorAccent"
         android:onClick="show1"
-        android:id="@+id/btnShow" />
+        android:text="Show1" />
 
     <Button
-        android:text="show"
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btnShow"
-        android:layout_toEndOf="@+id/btnShow"
         android:layout_marginStart="12dp"
+        android:layout_toEndOf="@+id/btnShow"
         android:onClick="show2"
-        android:id="@+id/button2" />
-</RelativeLayout>
+        android:text="show2" />
+</LinearLayout>
