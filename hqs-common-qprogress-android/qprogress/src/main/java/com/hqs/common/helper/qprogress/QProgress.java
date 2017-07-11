@@ -4,21 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.RectF;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.CircleProgress;
-import com.hqs.common.utils.Log;
 import com.hqs.common.utils.ScreenUtils;
-import com.hqs.common.utils.ViewUtil;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.io.Serializable;
@@ -238,9 +234,15 @@ public final class QProgress {
             contentView.setLayoutParams(params);
             rootView.addView(contentView);
 
-            float sh = ScreenUtils.screenH(context);
             int parentH = parent.getHeight();
-            float h = (parentH - sh - parent.getPaddingTop()) * 0.5f;
+            float sh = ScreenUtils.screenH(context);
+            if (parentH < parent.getWidth()){
+                sh = ScreenUtils.screenW(context);
+            }
+            float h = (parentH - sh) * 0.5f;
+            if (h > 0){
+                h = (parentH - ScreenUtils.screenW(context)) * 0.5f;
+            }
             rootView.setY(h);
 
             contentView.setOnClickListener(new View.OnClickListener() {
@@ -269,11 +271,11 @@ public final class QProgress {
 
             if (orientation == Configuration.ORIENTATION_PORTRAIT){
                 h = (int) ScreenUtils.screenH(context);
-                w = rootView.getHeight();
+                w = (int) ScreenUtils.screenW(context);
                 y = parent.getHeight() - w;
             }
             else{
-                w = (int) ScreenUtils.screenW(context);
+                w = (int) ScreenUtils.screenH(context);
                 h = parent.getWidth();
                 y = parent.getHeight() - w;
             }
@@ -372,7 +374,6 @@ public final class QProgress {
     }
 
     private static class QProgressParam implements Serializable {
-        private int orientation = Configuration.ORIENTATION_PORTRAIT;
         private int wheelColor = Color.BLUE;
         private int wheelBackgroundColor = Color.rgb(240, 240, 240);
         private int progressBarBackgroundColor = Color.rgb(240, 240, 240);
