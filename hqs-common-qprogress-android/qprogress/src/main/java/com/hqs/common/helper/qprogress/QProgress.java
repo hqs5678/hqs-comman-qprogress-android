@@ -3,16 +3,21 @@ package com.hqs.common.helper.qprogress;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.CircleProgress;
+import com.hqs.common.utils.Log;
 import com.hqs.common.utils.ScreenUtils;
+import com.hqs.common.utils.ViewUtil;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.io.Serializable;
@@ -30,12 +35,12 @@ public final class QProgress {
     private QProgressComponent progressComponent;
 
 
-    private QProgress(Activity activity, QProgressParam param){
+    private QProgress(Activity activity, QProgressParam param) {
         this.param = param;
         this.activityReference = new WeakReference<>(activity);
     }
 
-    public QProgress show(){
+    public QProgress show() {
         if (progressComponent == null || !isShowing) {
             Activity activity = this.activityReference.get();
             progressComponent = new QProgressComponent(activity, param);
@@ -45,23 +50,25 @@ public final class QProgress {
     }
 
     public QProgress show(int progress, String preText) {
-        if (progress < 0){
+        if (progress < 0) {
             Activity activity = this.activityReference.get();
             Toast.makeText(activity, "progress should be greater than zero", Toast.LENGTH_LONG).show();
             return this;
         }
-        if (progressComponent == null){
+        if (progressComponent == null && activityReference != null && activityReference.get() != null) {
             Activity activity = this.activityReference.get();
             progressComponent = new QProgressComponent(activity, param);
         }
-        progressComponent.updateProgress(progress, preText);
+        if (progressComponent != null){
+            progressComponent.updateProgress(progress, preText);
+        }
         isShowing = true;
 
         return this;
     }
 
-    public void dismiss(){
-        if (progressComponent != null){
+    public void dismiss() {
+        if (progressComponent != null) {
             progressComponent.preFinish();
             progressComponent = null;
             param = null;
@@ -73,19 +80,21 @@ public final class QProgress {
     // 添加返回按钮点击事件
     // 需要在调用者的activity中调用
     public boolean onBackPressed() {
-        if (param != null && param.cancelable && progressComponent.contentView.isEnabled()){
-            progressComponent.contentView.setEnabled(false);
-            progressComponent.preFinish();
+        if (param != null && param.cancelable) {
+            if (param.cancelable){
+                dismiss();
+            }
             return true;
         }
         return false;
     }
 
-    public static class Builder{
+    public static class Builder {
 
         private QProgressParam progressParam;
         private Activity activity;
-        public Builder(Activity activity){
+
+        public Builder(Activity activity) {
             this.activity = activity;
             this.progressParam = new QProgressParam();
         }
@@ -125,7 +134,7 @@ public final class QProgress {
             return this;
         }
 
-        public QProgress create(){
+        public QProgress create() {
 
             QProgress qProgress = new QProgress(this.activity, progressParam);
             this.activity = null;
@@ -134,11 +143,13 @@ public final class QProgress {
         }
     }
 
-    public class QProgressComponent{
+    public class QProgressComponent {
 
         private ViewGroup parent;
         private QProgressParam progressParam;
-        private RootView contentView;
+        private RelativeLayout contentView;
+        private RootView rootView;
+
         private CardView bgView;
         private ProgressWheel progressWheel;
         private int progress = -1;
@@ -153,7 +164,7 @@ public final class QProgress {
             this.progressParam = progressParam;
             this.parent = getRootView(activity);
 
-            if (parent == null){
+            if (parent == null) {
                 Toast.makeText(activity, "fatal error occurred", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -164,13 +175,13 @@ public final class QProgress {
 
         // 获取activity的root view
         private ViewGroup getRootView(Activity context) {
-            return (ViewGroup) ((ViewGroup)context.findViewById(android.R.id.content)).getChildAt(0);
+            return (ViewGroup) context.findViewById(android.R.id.content);
         }
 
-        private void init(){
+        private void init() {
 
             if (progress >= 0) {
-                contentView = (RootView) LayoutInflater.from(context).inflate(R.layout.q_progress_circle_layout, null);
+                contentView = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.q_progress_circle_layout, null);
 
                 this.circleProgress = (CircleProgress) contentView.findViewById(R.id.q_circle_progress);
                 circleProgress.setUnfinishedColor(progressParam.progressBarBackgroundColor);
@@ -184,7 +195,7 @@ public final class QProgress {
                 this.circleProgress.setProgress(progress);
                 circleProgress.setPrefixText(preText);
             } else {
-                contentView = (RootView) LayoutInflater.from(context).inflate(R.layout.q_progress_layout, null);
+                contentView = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.q_progress_layout, null);
 
                 progressWheel = (ProgressWheel) contentView.findViewById(R.id.q_progress_wheel);
                 progressWheel.setBarColor(progressParam.wheelColor);
@@ -199,32 +210,62 @@ public final class QProgress {
                     }
                 });
             }
-            contentView.setEnabled(false);
-            contentView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            float h = ScreenUtils.screenH(context);
+
+            this.rootView = new RootView(context);
+            parent.addView(rootView);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            contentView.setLayoutParams(params);
+            rootView.addView(contentView);
+
+            ViewGroup.LayoutParams layoutParams = rootView.getLayoutParams();
+            layoutParams.width = parent.getWidth();
+            layoutParams.height = parent.getHeight();
+            rootView.setLayoutParams(layoutParams);
+
+            rootView.setBackgroundColor(Color.TRANSPARENT);
+
+            float sh = ScreenUtils.screenH(context);
             int parentH = parent.getHeight();
-            contentView.setY((parentH - h) * 0.5f);
+            float h = (parentH - sh - parent.getPaddingTop()) * 0.5f;
+            rootView.setY(h);
+
+
+//            if (parent instanceof LinearLayout) {
+//                LinearLayout linearLayout = (LinearLayout) parent;
+//                if (linearLayout.getChildCount() > 0) {
+//                    View lastView = linearLayout.getChildAt(linearLayout.getChildCount() - 1);
+//                    if (linearLayout.getOrientation() == LinearLayout.HORIZONTAL) {
+//                        contentView.setX(-lastView.getRight());
+//                    }
+//                    else{
+//                        contentView.setY(-lastView.getBottom() + (parentH - sh) * 0.5f);
+//                    }
+//                }
+//            }
+//            else if (parent instanceof RelativeLayout){
+//
+//            }
 
             contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (progressParam.dismissOnTouch && progressParam.cancelable){
-                        preFinish();
+                    if (progressParam.dismissOnTouch && progressParam.cancelable) {
+                        dismiss();
                     }
                 }
             });
 
-            contentView.setOnDetachedFromWindow(new Runnable() {
+            rootView.setOnDetachedFromWindow(new Runnable() {
                 @Override
                 public void run() {
                     destroy();
                 }
             });
+            contentView.setEnabled(false);
 
-            parent.addView(contentView);
         }
 
-        private void enterAnim(){
+        private void enterAnim() {
             Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
             animation.setDuration(100);
             animation.setFillAfter(true);
@@ -252,7 +293,7 @@ public final class QProgress {
         }
 
 
-        private void preFinish(){
+        private void preFinish() {
 
             if (onProgressListener != null) {
                 onProgressListener.onProgressCancel();
@@ -270,6 +311,7 @@ public final class QProgress {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    parent.removeView(rootView);
                     destroy();
                 }
 
@@ -282,13 +324,13 @@ public final class QProgress {
             contentView.setAnimation(animation);
         }
 
-        private void updateProgress(int progress, String preText){
+        private void updateProgress(int progress, String preText) {
 
             this.progress = progress;
             this.preText = preText;
 
-            if (circleProgress == null){
-                parent.removeView(contentView);
+            if (circleProgress == null) {
+                rootView.removeView(contentView);
                 init();
             }
             circleProgress.setProgress(progress);
@@ -304,11 +346,13 @@ public final class QProgress {
 
     public interface OnProgressListener {
         void onProgressShow();
+
         void onProgressCancel();
+
         void onProgressDestroy();
     }
 
-    private static class QProgressParam implements Serializable{
+    private static class QProgressParam implements Serializable {
         private int wheelColor = Color.BLUE;
         private int wheelBackgroundColor = Color.rgb(240, 240, 240);
         private int progressBarBackgroundColor = Color.rgb(240, 240, 240);

@@ -34,8 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    boolean isLoading = false;
+
     public void show2(View view){
 
+        isLoading = true;
 
         new Thread(new Runnable() {
             @Override
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
                 progress = new QProgress.Builder(MainActivity.this)
                         .setCancelable(true)
+                        .setDismissOnTouch(false)
                         .setOnProgressListener(new QProgress.OnProgressListener() {
                             @Override
                             public void onProgressShow() {
@@ -74,9 +78,8 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
                 int p = 0;
-                while (p <= 1000){
+                while (p <= 1000 && isLoading){
                     final  int pp = p;
 
                     try {
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (progress != null && progress.onBackPressed()){
+            isLoading = false;
             return;
         }
         super.onBackPressed();
