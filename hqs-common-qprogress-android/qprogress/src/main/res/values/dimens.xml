@@ -8,4 +8,7 @@
     <!--进度条圆角大小-->
     <dimen name="q_progressCornerRadius">10dp</dimen>
 
+    <!--圆形进度条标题字体的大小-->
+    <dimen name="q_progressTextSize">14sp</dimen>
+
 </resources>

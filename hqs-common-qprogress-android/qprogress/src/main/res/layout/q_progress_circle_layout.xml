@@ -14,10 +14,10 @@
             android:id="@+id/q_circle_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            custom:circle_finished_color="#3ec1f9"
+            custom:circle_finished_color="#30b6ef"
             custom:circle_progress="20"
-            custom:circle_text_color="#402e2e"
-            custom:circle_text_size="14sp" />
+            custom:circle_text_color="@color/q_progressTextColor"
+            custom:circle_text_size="@dimen/q_progressTextSize" />
 
     </android.support.v7.widget.CardView>
 
