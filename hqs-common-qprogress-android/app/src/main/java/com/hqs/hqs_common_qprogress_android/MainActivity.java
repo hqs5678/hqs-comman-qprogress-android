@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void show1(View view){
 
-        QProgress.Builder builder = new QProgress.Builder(this);
-        builder.setCancelable(true)
+        QProgress.Builder builder = new QProgress.Builder(this)
+                .setCancelable(true)
                 .setWheelColor(Color.BLUE)
                 .setDismissOnTouch(true);
 
