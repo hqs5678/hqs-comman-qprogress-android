@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
+                            // 设置进度
                             progress.show(pp/10, "正在下载");
                         }
                     });
