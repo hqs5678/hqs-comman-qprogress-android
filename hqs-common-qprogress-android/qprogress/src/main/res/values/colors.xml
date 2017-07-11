@@ -3,4 +3,7 @@
 
     <color name="transparent">#002e2828</color>
 
+    <!--进度条背景颜色-->
+    <color name="q_progressBackgroundColor">@android:color/darker_gray</color>
+
 </resources>
