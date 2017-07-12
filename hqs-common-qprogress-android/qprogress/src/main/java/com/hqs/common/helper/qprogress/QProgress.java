@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.hqs.common.utils.ScreenUtils;
+import com.hqs.common.utils.ViewUtil;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.io.Serializable;
@@ -170,7 +171,7 @@ public final class QProgress {
             this.context = activity;
             this.onProgressListener = progressParam.onProgressListener;
             this.progressParam = progressParam;
-            this.parent = getRootView(activity);
+            this.parent = ViewUtil.getContentView(activity);
 
             if (parent == null) {
                 Toast.makeText(activity, "fatal error occurred", Toast.LENGTH_SHORT).show();
@@ -179,11 +180,6 @@ public final class QProgress {
 
             init();
             enterAnim();
-        }
-
-        // 获取activity的root view
-        private ViewGroup getRootView(Activity context) {
-            return (ViewGroup) context.findViewById(android.R.id.content);
         }
 
         private void init() {
