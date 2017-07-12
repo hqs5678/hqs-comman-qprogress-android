@@ -13,7 +13,7 @@
 ```
 
 dependencies {
-    compile 'com.hqs.common.helper.qprogress:qprogress:1.0.10'
+    compile 'com.hqs.common.helper.qprogress:qprogress:1.0.11'
 }
 
 ```
