@@ -10,8 +10,8 @@
         android:layout_width="@dimen/q_circleProgressBgWH"
         android:layout_height="@dimen/q_circleProgressBgWH"
         android:layout_centerInParent="true"
-        cardBackgroundColor="@color/q_progressBackgroundColor"
-        cardCornerRadius="@dimen/q_progressCornerRadius">
+        app:cardBackgroundColor="@color/q_progressBackgroundColor"
+        app:cardCornerRadius="@dimen/q_progressCornerRadius">
 
         <com.pnikosis.materialishprogress.ProgressWheel
             android:id="@+id/q_progress_wheel"
