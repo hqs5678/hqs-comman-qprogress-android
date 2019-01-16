@@ -11,6 +11,12 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -21,9 +27,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
         implementation project(':qprogress')
-    implementation 'com.hqs.common.helper.qprogress:qprogress:1.0.13'
+//    api 'com.hqs.common.helper.qprogress:qprogress:1.0.14'
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
